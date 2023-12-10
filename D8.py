@@ -1,31 +1,35 @@
-import itertools as it
-file = open("input.txt", "r")
+import os
+from pathlib import Path
+from time import perf_counter
+from itertools import cycle
+from functools import reduce
+from math import lcm
 
-steps = file.readline().strip()
+with open("input.txt") as file:
+    header,_,*lines = file.read().splitlines()
+lrs = list(map('LR'.index,header))
+directions = {line[:3]:(line[7:10],line[12:15]) for line in lines}
+ghost_starts = [loc for loc in directions if loc.endswith('A')]
 
-mapped = {}
-
-while line:=file.readline():
-    if line == '\n':
-        continue
-    key, directions = line.split(" = ")
-    left, right = directions.strip().strip("(").strip(")").split(",")
-    mapped[key] = left, right
-
-currKey = next(iter(mapped))
-total_steps = 0
-for direction in it.cycle(steps):
-    if currKey == 'ZZZ':
-        print(total_steps)
+#PART 1 
+p1 = 0
+loc = 'AAA'
+for lr in cycle(lrs):
+    loc = directions[loc][lr]
+    p1+=1
+    if loc == 'ZZZ':
         break
-    total_steps += 1
-    if direction == 'L':
-        currKey = mapped[currKey][0].strip() #Get left element
+print("Part 1:",p1)
 
-    elif direction == 'R':
-        currKey = mapped[currKey][1].strip() #Get left element
-
-
-
-   
-    
+# PART 2 
+ghost_counts = []
+for i,loc in enumerate(ghost_starts):
+    count = 0
+    for lr in cycle(lrs):
+        loc = directions[loc][lr]
+        count+=1
+        if loc.endswith('Z'):
+            ghost_counts.append(count)
+            break
+p2 = reduce(lcm, ghost_counts)
+print("Part 2:",p2)

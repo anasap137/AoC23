@@ -13,7 +13,7 @@ def find_value(list):
     while test:
         currlist = []
         for i in range(len(list) - 1):
-            sub = int(list[i+1]) - int(list[i+1])
+            sub = int(list[i+1]) - int(list[i])
             currlist.append(sub)
         #Check if all elements are zero
         if allZero(currlist):
@@ -26,13 +26,15 @@ def find_value(list):
     # Sum all last elements of sublists, 
     # last element = previous last element + second last in current
 
+    last = 0
     for i in range(1, len(differences)):
-        secondLast = differences[-1 - i]
+        secondLast = differences[-i - 1]
         last = differences[-i]
-        new_last = secondLast[-1] + last[-1]
-        secondLast.append(new_last)  
-        if i == len(differences) -1:
-            return new_last
+        new_last = secondLast[0] - last[0]
+        secondLast.insert(0, new_last)
+        last = new_last
+    print(last)
+    return last
 
 
 total_sum = 0
